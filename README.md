@@ -26,3 +26,6 @@ Alcance de la primera versión
 La primera versión trabajará con los datos de los viajes, incluyendo su identificador, fecha y hora de inicio y fin, y estaciones de origen y destino. La selección de viajes se realizará según su fecha y hora de inicio, contabilizando tanto la salida como la llegada de cada viaje seleccionado.
 
 Quedarán fuera del alcance la consulta de datos en tiempo real, la actualización automática de la información de Ecobici, el cálculo del inventario de bicicletas disponibles, las reposiciones de bicicletas y la construcción de una interfaz gráfica compleja. El objetivo será desarrollar un producto pequeño, funcional y verificable mediante pruebas con datos de ejemplo.
+
+Ningún registro se descarta en silencio
+. Todo viaje rechazado se aísla junto con su motivo explícito de rechazo para que el equipo operativo pueda auditar el origen de la falla

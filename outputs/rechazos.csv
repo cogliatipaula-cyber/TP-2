@@ -1,0 +1,6 @@
+id_viaje,fecha_inicio,fecha_fin,id_estacion_origen,nombre_estacion_origen,id_estacion_destino,nombre_estacion_destino,duracion_segundos,motivo_rechazo
+ECO-1056,2024-04-15 10:30:00,2024-04-15 10:15:00,EST-01,Facultad de Derecho,EST-07,Obelisco,-900,Inconsistencia temporal: fecha_fin es anterior a fecha_inicio
+ECO-1057,2024-04-15 11:45:00,2024-04-15 12:10:00,EST-02,Retiro,,,1500,Extremo de destino incompleto o faltante
+ECO-1058,2024-04-15 14:20:00,2024-04-15 14:50:00,,,EST-05,Parque Las Heras,1800,Extremo de origen incompleto o faltante
+ECO-1059,15/04/2024 16:00:00,2024-04-15 16:30:00,EST-03,Plaza de Mayo,EST-04,Congreso,1800,Formato textual de fecha_inicio inválido: '15/04/2024 16:00:00'
+ECO-1060,2024-04-31 17:00:00,2024-04-31 17:35:00,EST-06,Plaza Italia,EST-08,Costanera Sur,2100,fecha_inicio inexistente en calendario: day 31 must be in range 1..30 for month 4 in year 2024
