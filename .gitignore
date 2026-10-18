@@ -1,0 +1,14 @@
+# Archivos temporales de Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Entornos virtuales
+venv/
+.venv/
+env/
+
+# Archivos del sistema y VS Code
+.vscode/
+Thumbs.db
