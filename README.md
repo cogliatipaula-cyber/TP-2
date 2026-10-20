@@ -1,86 +1,64 @@
 # Trabajo Práctico N.º 2: Aplicación de Procesamiento de Datos de Ecobici
 
 **Materia:** Programación de Datos en Python  
-**Autora:** Paula Cogliati  
+**Autora:** Paula Cogliati 
 
 ---
 
-## 1. Problema o necesidad que se aborda
+## Problema o necesidad que se aborda
 
-La aplicación busca resolver la necesidad de analizar los movimientos de una red de bicicletas públicas (como Ecobici) para conocer cuántos viajes salen y llegan a cada estación durante un período determinado. Los registros incompletos o inconsistentes pueden generar resultados incorrectos, por lo que es necesario validar los datos antes de procesarlos.
+La aplicación busca resolver la necesidad de analizar los movimientos de una red de bicicletas públicas, como Ecobici, para conocer cuántos viajes salen y llegan a cada estación durante un período determinado. Los registros incompletos o inconsistentes pueden generar resultados incorrectos, por lo que es necesario validar los datos antes de procesarlos.
 
-## 2. Usuarios y finalidad
+## Usuarios y finalidad
 
 El programa está dirigido a personas encargadas de supervisar y analizar el funcionamiento operativo de la red de bicicletas. Les permitirá consultar los movimientos registrados por estación y período, identificar la cantidad de salidas y llegadas y analizar el balance neto de cada estación.
 
-## 3. Fuente de datos, licencia y unidad de análisis
+## Fuente de datos, licencia y unidad de análisis
 
-* **Fuente de datos:** Muestras tabulares en formato CSV (`data/ecobici-movimientos.csv`) y JSON (`data/ecobici-movimientos.json`) basadas en registros de uso público del sistema Ecobici.
-* **Licencia:** Datos de dominio público / acceso abierto para fines educativos.
-* **Unidad de análisis:** El **`Viaje`** (recorrido individual realizado por un usuario entre una estación de origen y una de destino con sello de fecha/hora de inicio y fin).
+* **Fuente de datos:** Muestras tabulares en formato CSV y JSON estructuradas a partir de la inspiración del dataset abierto de bicicletas públicas del Gobierno de la Ciudad de Buenos Aires ([BA Data - Ecobici](https://data.buenosaires.gob.ar/dataset/estaciones-bicicletas-publicas)).
+* **Licencia:** Datos de dominio público / acceso abierto para uso educativo.
+* **Unidad de análisis:** El **`Viaje`** (recorrido individual realizado por un usuario entre una estación de origen y una de destino con sellos de fecha/hora de inicio y fin).
 
-## 4. Solución propuesta y operaciones
+## Organización del código
 
-Se desarrolló una aplicación en Python que procesa registros de viajes y permite:
-* **Validar los datos de los recorridos:** Rechaza registros con formatos inválidos, fechas imposibles en el calendario, inconsistencias temporales o extremos faltantes.
-* **Seleccionar viajes por período:** Filtra los recorridos cuyo inicio se encuentre dentro del rango solicitado.
-* **Registrar salidas y llegadas:** Contabiliza los movimientos correspondientes a cada estación.
-* **Calcular el balance neto:** Evalúa la diferencia entre llegadas y salidas (`balance = llegadas - salidas`).
-* **Verificar invariantes del dominio:** Comprueba la conservación de la red (suma total de balances = 0).
-* **Generar y exportar reportes:** Exporta los resultados analíticos a la carpeta `outputs/`.
+El proyecto está estructurado en módulos y carpetas funcionales para mantener el código ordenado y mantenible:
 
-## 5. Decisiones de limpieza, validaciones y supuestos
+La carpeta `data` contiene las fuentes de datos de entrada en formato CSV (`ecobici-movimientos.csv`) y JSON (`ecobici-movimientos.json`), acompañadas por un archivo `README.md` interno que describe el formato de las muestras.
 
-* **Expresiones Regulares (`re`):** Se utiliza `^ECO-\d{4}$` para validar la máscara de ID de viaje y `^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$` para la estructura sintáctica de la fecha.
-* **Validación de Calendario:** La sintaxis de fecha se complementa con `datetime.strptime` para detectar y descartar fechas inexistentes en el calendario real (ej. 31 de abril).
-* **Inconsistencias Temporales:** Se valida estrictamente que la fecha de fin sea igual o posterior a la fecha de inicio (`fecha_fin >= fecha_inicio`).
-* **Política de Transparencia (Sin descarte silencioso):** Ningún registro se descarta en silencio. Todo viaje rechazado se aísla en `outputs/rechazos.csv` detallando la fila original y el motivo explícito de la falla.
+La carpeta `src` alberga la lógica principal del programa. Dentro de ella, el archivo `fuentes.py` define la abstracción base y las clases encargadas de la lectura de archivos, mientras que `pipeline.py` implementa la clase `Viaje`, las funciones de validación, filtrado por fecha y el cálculo de balances operativos por estación.
 
-## 6. Organización del código
+La carpeta `tests` resguarda la suite de pruebas unitarias automatizadas (`test_pipeline.py`) desarrolladas con el módulo `unittest` para verificar el correcto funcionamiento del sistema.
 
-TP-2/
-├── data/
-│   ├── ecobici-movimientos.csv
-│   ├── ecobici-movimientos.json
-│   └── README.md
-├── outputs/
-│   ├── rechazos.csv
-│   └── reporte_balance.csv
-├── src/
-│   ├── __pycache__/
-│   ├── fuentes.py
-│   └── pipeline.py
-├── tests/
-│   ├── __pycache__/
-│   ├── __init__.py
-│   └── test_pipeline.py
-├── .gitignore
-├── README.md
-└── run.py
+La carpeta `outputs` almacena los archivos generados automáticamente por la aplicación, incluyendo `reporte_balance.csv` con el resumen consolidado por estación y `rechazos.csv` con las filas descartadas y sus motivos de auditoría.
 
-7. Ejemplo de resultados
-Al ejecutar py run.py, la aplicación valida las fuentes, genera los archivos en outputs/ e imprime por consola el consolidado operativo:
-======================================================================
-REPORTE DE BALANCE OPERATIVO POR ESTACIÓN (CSV vs JSON)
-======================================================================
-Estación                        Salidas   Llegadas    Balance Neto
-----------------------------------------------------------------------
-Congreso                             2          2               0
-Plaza Italia                         2          2               0
-Plaza de Mayo                        2          2               0
-----------------------------------------------------------------------
-Verificación de conservación de red (Suma de balances): 0 [OK]
-======================================================================
+En la raíz del proyecto se encuentra el archivo `run.py`, que actúa como el punto de entrada ejecutable que coordina todo el flujo. Además, se incluye el archivo `.gitignore` para evitar la subida de archivos temporales de Python, el archivo `requirements.txt` que detalla las dependencias (Biblioteca Estándar de Python) y este archivo `README.md` con la documentación general.
 
+## Limitaciones
 
-8. Interpretación del Balance: 
+* El reporte producido representa únicamente el balance de los movimientos registrados dentro de las muestras procesadas y no refleja la cantidad ni el stock total de bicicletas físicas disponibles en cada estación.
+* La aplicación procesa archivos de forma local y batch, por lo que no realiza consultas en tiempo real ni actualizaciones automáticas a través de servicios externos.
+* Quedan fuera del alcance la gestión de logística de rebalanceo de flota mediante camiones de traslado y la construcción de interfaces gráficas de usuario.
 
-Un balance positivo indica que la estación recibió más bicicletas de las que salieron; un balance negativo indica mayor flujo de salida; y un balance igual a cero representa un estado de equilibrio operativo.
+## Manual simple para el usuario
 
-9. Conservación de la Red: 
+### 1. Requisitos previos
+Para utilizar esta aplicación solo necesitás tener instalado **Python 3** en tu computadora. No hace falta instalar librerías externas ni configurar entornos virtuales complejos, ya que el programa funciona exclusivamente con la biblioteca estándar de Python.
 
-La suma global de los balances netos de todas las estaciones es siempre igual a cero, reflejando que cada bicicleta que sale de un origen debe llegar a un destino.
+### 2. Cómo ejecutar la aplicación
+1. Abrí la terminal o consola de comandos de tu sistema operativo.
+2. Navegá hasta la carpeta raíz del proyecto (`TP-2`).
+3. Ejecutá el siguiente comando:
 
-10. Limitaciones: 
+```powershell
+py run.py
 
-El reporte representa únicamente el balance de movimientos registrados en la muestra y no refleja el inventario total de bicicletas físicas disponibles. Quedan fuera del alcance las consultas en tiempo real y la gestión de logística de rebalanceo de flota.
+3. Qué esperar al ejecutar
+En la consola: Verás una tabla comparativa limpia con el nombre de cada estación, su cantidad de salidas, llegadas y el balance neto final (llegadas - salidas), seguida de la verificación automatizada que confirma que la suma global de balances en la red es igual a cero.
+En la carpeta outputs: Se generarán o actualizarán automáticamente dos archivos CSV:
+outputs/reporte_balance.csv: Contiene el reporte consolidado listo para abrir en Excel o compartir.
+outputs/rechazos.csv: Muestra los registros que tenían errores en los datos originales, indicando la fila y la causa explícita del descarte.
+
+4. Cómo ejecutar las pruebas automatizadas
+Si querés verificar que el código funciona correctamente y cumple con todos los controles de calidad, podés correr la suite de tests ejecutando:
+py -m unittest discover -s tests
+Si todo está en orden, la terminal te devolverá un mensaje indicando que se ejecutaron los 6 tests con resultado OK.
